@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Yıllık Rapor - Taqqı{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-end mb-3">
+    <div>
+      <div class="text-secondary small">Yıllık Rapor</div>
+      <div class="h4 mb-0">{{ year }}</div>
+      <div class="text-secondary small">{{ totals_count }} kayıt</div>
+    </div>
+
+    <form method="get" class="d-flex gap-2">
+      <input class="form-control" type="number" name="year" min="2000" max="2100" value="{{ year }}" />
+      <button class="btn btn-outline-pink" type="submit">Getir</button>
+      <a class="btn btn-outline-light" href="{{ url_for('index') }}">Günlük</a>
+      <a class="btn btn-outline-light" href="{{ url_for('report') }}">Aylık</a>
+    </form>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="stat stat-income">
+        <div class="stat-label">Nakit Gelir (Yıl)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(totals_cash) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Kart Gelir (Brüt - Yıl)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(totals_card) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-profit">
+        <div class="stat-label">Net Gelir (Yıl)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(totals_net_income) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Kart Kesinti (%20 - Yıl)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(totals_card_fee) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Toplam Gider (Yıl)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(totals_expense) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-profit">
+        <div class="stat-label">Net Kar/Zarar (Yıl)</div>
+        <div class="stat-value {% if totals_profit < 0 %}text-danger{% else %}text-success{% endif %}">₺ {{ '%.2f'|format(totals_profit) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="h5 mb-3">Ay Ay Özet</div>
+
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th style="width: 110px">Ay</th>
+              <th class="text-end" style="width: 140px">Nakit</th>
+              <th class="text-end" style="width: 140px">Kart (Brüt)</th>
+              <th class="text-end" style="width: 140px">Kesinti</th>
+              <th class="text-end" style="width: 140px">Net Gelir</th>
+              <th class="text-end" style="width: 140px">Gider</th>
+              <th class="text-end" style="width: 140px">Kar/Zarar</th>
+              <th class="text-end" style="width: 90px">Kayıt</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in months %}
+              <tr>
+                <td class="text-secondary text-nowrap">
+                  <a class="link-light text-decoration-none text-nowrap" href="{{ url_for('report', month=m['ym']) }}">{{ m['ym'] }} - {{ m['month_name'] }}</a>
+                </td>
+                <td class="text-end">₺ {{ '%.2f'|format(m['cash_income']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(m['card_income']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(m['card_fee']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(m['net_income']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(m['total_expense']) }}</td>
+                <td class="text-end fw-semibold {% if m['profit'] < 0 %}text-danger{% else %}text-success{% endif %}">₺ {{ '%.2f'|format(m['profit']) }}</td>
+                <td class="text-end text-secondary">{{ m['count_entries'] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

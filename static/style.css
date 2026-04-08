@@ -1,0 +1,94 @@
+:root {
+  --pink: #ff3ea5;
+  --pink2: #ff69c6;
+  --bg: #0b0b10;
+  --card: #11111a;
+  --border: rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: radial-gradient(1000px 600px at 0% 0%, rgba(255, 62, 165, 0.12), transparent 60%),
+    radial-gradient(1000px 600px at 100% 0%, rgba(255, 105, 198, 0.10), transparent 55%),
+    var(--bg);
+}
+
+.nav-glow {
+  background: rgba(10, 10, 16, 0.75);
+  backdrop-filter: blur(10px);
+}
+
+.card {
+  background: rgba(17, 17, 26, 0.85);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.card-pink {
+  border-color: rgba(255, 62, 165, 0.35);
+  box-shadow: 0 16px 36px rgba(255, 62, 165, 0.08), 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.btn-pink {
+  --bs-btn-color: #0b0b10;
+  --bs-btn-bg: var(--pink);
+  --bs-btn-border-color: var(--pink);
+  --bs-btn-hover-color: #0b0b10;
+  --bs-btn-hover-bg: var(--pink2);
+  --bs-btn-hover-border-color: var(--pink2);
+  --bs-btn-active-bg: var(--pink2);
+  --bs-btn-active-border-color: var(--pink2);
+  font-weight: 700;
+}
+
+.btn-outline-pink {
+  --bs-btn-color: var(--pink2);
+  --bs-btn-border-color: rgba(255, 105, 198, 0.45);
+  --bs-btn-hover-color: #0b0b10;
+  --bs-btn-hover-bg: var(--pink2);
+  --bs-btn-hover-border-color: var(--pink2);
+}
+
+.stat {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.20);
+}
+
+.stat-label {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.85rem;
+}
+
+.stat-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.stat-income {
+  border-color: rgba(46, 204, 113, 0.25);
+}
+
+.stat-expense {
+  border-color: rgba(231, 76, 60, 0.25);
+}
+
+.stat-profit {
+  border-color: rgba(255, 62, 165, 0.25);
+}
+
+.table {
+  --bs-table-bg: transparent;
+}
+
+.form-control,
+.form-select {
+  background-color: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(255, 62, 165, 0.55);
+  box-shadow: 0 0 0 0.25rem rgba(255, 62, 165, 0.15);
+}

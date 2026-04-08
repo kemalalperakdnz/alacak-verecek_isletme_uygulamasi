@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Kaydı Düzenle - Taqqı{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-7">
+      <div class="card card-pink">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <div class="text-secondary small">Kayıt Düzenle</div>
+              <div class="h5 mb-0">#{{ entry['id'] }}</div>
+            </div>
+            <a class="btn btn-outline-light" href="{{ url_for('index', month=month) }}">Geri</a>
+          </div>
+
+          <form method="post" action="{{ url_for('edit', entry_id=entry['id']) }}" class="d-flex flex-column gap-2">
+            <input type="hidden" name="month" value="{{ month }}" />
+
+            <div>
+              <label class="form-label">Tarih</label>
+              <input class="form-control" type="date" name="entry_date" value="{{ entry['entry_date'] }}" required />
+            </div>
+
+            <div>
+              <label class="form-label">Tür</label>
+              <select class="form-select" name="entry_type" id="entry_type" required>
+                <option value="income" {% if entry['entry_type'] == 'income' %}selected{% endif %}>Gelir</option>
+                <option value="expense" {% if entry['entry_type'] == 'expense' %}selected{% endif %}>Gider</option>
+              </select>
+            </div>
+
+            <div id="payment_method_wrap">
+              <label class="form-label">Ödeme Türü (Gelir)</label>
+              {% set pm = entry['payment_method'] or 'cash' %}
+              <select class="form-select" name="payment_method" id="payment_method">
+                <option value="cash" {% if pm == 'cash' %}selected{% endif %}>Nakit</option>
+                <option value="card" {% if pm == 'card' %}selected{% endif %}>Kredi Kartı</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Tutar (₺)</label>
+              <input class="form-control" type="text" inputmode="decimal" name="amount" value="{{ '%.2f'|format(entry['amount']) }}" required />
+            </div>
+
+            <div>
+              <label class="form-label">Açıklama (opsiyonel)</label>
+              <input class="form-control" type="text" name="note" value="{{ entry['note'] or '' }}" />
+            </div>
+
+            <button class="btn btn-pink mt-1" type="submit">Kaydet</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const typeEl = document.getElementById('entry_type');
+    const wrapEl = document.getElementById('payment_method_wrap');
+    const payEl = document.getElementById('payment_method');
+
+    function syncPaymentVisibility() {
+      const isIncome = typeEl.value === 'income';
+      wrapEl.style.display = isIncome ? '' : 'none';
+      if (!isIncome) {
+        payEl.value = 'cash';
+      }
+    }
+
+    typeEl.addEventListener('change', syncPaymentVisibility);
+    syncPaymentVisibility();
+  </script>
+{% endblock %}

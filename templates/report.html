@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Aylık Rapor - Taqqı{% endblock %}
+
+{% block content %}
+  <div class="d-flex flex-wrap gap-2 justify-content-between align-items-end mb-3">
+    <div>
+      <div class="text-secondary small">Aylık Rapor</div>
+      <div class="h4 mb-0">{{ month }}</div>
+      <div class="text-secondary small">{{ count_entries }} kayıt</div>
+    </div>
+
+    <form method="get" class="d-flex gap-2">
+      <input class="form-control" type="month" name="month" value="{{ month }}" />
+      <button class="btn btn-outline-pink" type="submit">Getir</button>
+      <a class="btn btn-outline-light" href="{{ url_for('index', month=month) }}">Geri</a>
+    </form>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="stat stat-income">
+        <div class="stat-label">Nakit Gelir</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(cash_income) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Kart Gelir (Brüt)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(card_income) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-profit">
+        <div class="stat-label">Net Gelir</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(net_income) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Kart Kesinti (%20)</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(card_fee) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-expense">
+        <div class="stat-label">Toplam Gider</div>
+        <div class="stat-value">₺ {{ '%.2f'|format(total_expense) }}</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat stat-profit">
+        <div class="stat-label">Net Kar/Zarar</div>
+        <div class="stat-value {% if profit < 0 %}text-danger{% else %}text-success{% endif %}">₺ {{ '%.2f'|format(profit) }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="h5 mb-3">Gün Gün Özet</div>
+
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead>
+            <tr>
+              <th style="width: 120px">Tarih</th>
+              <th>Açıklama</th>
+              <th class="text-end" style="width: 160px">Nakit</th>
+              <th class="text-end" style="width: 160px">Kart (Brüt)</th>
+              <th class="text-end" style="width: 160px">Kesinti</th>
+              <th class="text-end" style="width: 160px">Net Gelir</th>
+              <th class="text-end" style="width: 160px">Gider</th>
+              <th class="text-end" style="width: 160px">Kar/Zarar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in daily %}
+              {% set fee = (d['card_income'] or 0) * 0.20 %}
+              {% set net = (d['cash_income'] or 0) + (d['card_income'] or 0) - fee %}
+              {% set p = net - (d['expense'] or 0) %}
+              <tr>
+                <td class="text-secondary">{{ d['entry_date'] }}</td>
+                <td class="text-secondary">{{ (d['notes'] or '') }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(d['cash_income']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(d['card_income']) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(fee) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(net) }}</td>
+                <td class="text-end">₺ {{ '%.2f'|format(d['expense']) }}</td>
+                <td class="text-end fw-semibold {% if p < 0 %}text-danger{% else %}text-success{% endif %}">₺ {{ '%.2f'|format(p) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% if daily|length == 0 %}
+        <div class="text-secondary">Bu ay için raporlanacak kayıt yok.</div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
